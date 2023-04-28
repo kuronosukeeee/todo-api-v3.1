@@ -10,7 +10,7 @@ public class TodoItem
   public string? Description
   { get; set; }
 
-  public DateTimeOffset DueDate
+  public DateTime DueDate
   { get; set; }
 
   public DateTime? CompletionDate
