@@ -39,7 +39,9 @@ namespace todo_api_v3._1.Controllers
       }
       catch (Exception ex)
       {
-        return StatusCode(500, $"Internal server error:{ex.Message}");
+        Console.WriteLine($"Error message: {ex.Message}");
+        Console.WriteLine($"Stack trace: {ex.StackTrace}");
+        return StatusCode(500, new { message = "何らかの問題が発生しました。再度実行してください。" });
       }
     }
 
@@ -73,10 +75,8 @@ namespace todo_api_v3._1.Controllers
       {
         Console.WriteLine($"Error message: {ex.Message}");
         Console.WriteLine($"Stack trace: {ex.StackTrace}");
-
-        return StatusCode(500, $"Internal server error: {ex.Message}");
+        return StatusCode(500, new { message = "何らかの問題が発生しました。再度実行してください。" });
       }
-
       return CreatedAtAction(nameof(GetTodoItems), new { id = todoItem.Id }, todoItem);
     }
 
@@ -112,18 +112,12 @@ namespace todo_api_v3._1.Controllers
       {
         await _context.SaveChangesAsync();
       }
-      catch (DbUpdateConcurrencyException)
+      catch (Exception ex)
       {
-        if (!_context.TodoItem.Any(e => e.Id == id))
-        {
-          return NotFound();
-        }
-        else
-        {
-          throw;
-        }
+        Console.WriteLine($"Error message: {ex.Message}");
+        Console.WriteLine($"Stack trace: {ex.StackTrace}");
+        return StatusCode(500, new { message = "何らかの問題が発生しました。再度実行してください。" });
       }
-
       return NoContent();
     }
 
@@ -159,17 +153,10 @@ namespace todo_api_v3._1.Controllers
       }
       catch (Exception ex)
       {
-        if (!_context.TodoItem.Any(e => e.Id == id))
-        {
-          return NotFound();
-        }
-        else
-        {
-          //throw;
-          return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        Console.WriteLine($"Error message: {ex.Message}");
+        Console.WriteLine($"Stack trace: {ex.StackTrace}");
+        return StatusCode(500, new { message = "何らかの問題が発生しました。再度実行してください。" });
       }
-
       return Ok(existingTodoItem);
     }
 
@@ -181,7 +168,7 @@ namespace todo_api_v3._1.Controllers
 
       if (todoItem == null)
       {
-        return NotFound();
+        return NotFound(new { message = "削除対象が見つかりませんでした。" });
       }
 
       _context.TodoItem.Remove(todoItem);
@@ -192,9 +179,10 @@ namespace todo_api_v3._1.Controllers
       }
       catch (Exception ex)
       {
-        return StatusCode(500, $"Internal server error:{ex.Message}");
+        Console.WriteLine($"Error message: {ex.Message}");
+        Console.WriteLine($"Stack trace: {ex.StackTrace}");
+        return StatusCode(500, new { message = "何らかの問題が発生しました。再度実行してください。" });
       }
-
       return NoContent();
     }
   }
